@@ -24,7 +24,7 @@ class FileUserServiceAbstractTest extends TestCase
 
         $this->fileUserService = $this->getMockBuilder(FileUserServiceAbstract::class)
             ->setMethods(array('getPath','getFormat', 'getSerializerEncoder', 'getSourceContent'))
-            ->setConstructorArgs(array($serializer))
+            ->setConstructorArgs(array($serializer, '/some/fake/path'))
             ->getMock();
 
         $this->fileUserService->method('getFormat')->willReturn('json');

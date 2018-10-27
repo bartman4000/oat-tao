@@ -13,6 +13,8 @@ services:
         public: false       # Allows optimizing the container by removing unused services; this also means
                             # fetching services directly from the container via $container->get() won't work.
                             # The best practice is to be explicit about your dependencies anyway.
+        bind:
+            $rootDir: '%kernel.project_dir%'
 
     json_user_client:
         class:    App\Service\JsonUserService
@@ -48,10 +50,10 @@ services:
     App\Controller\UserController:
         public: true
         bind:
-            $userService: '@csv_user_client'
+            $userService: '@json_user_client'
 
     App\Controller\UsersController:
         public: true
         bind:
-            $userService: '@json_user_client'
+            $userService: '@csv_user_client'
 

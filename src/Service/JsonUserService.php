@@ -5,9 +5,9 @@
 
 namespace App\Service;
 
-class JsonUserService extends FileUserServiceAbstract implements UserServiceInterface
+class JsonUserService extends FileUserServiceAbstract
 {
-    const PATH = __DIR__.'/../../var/data/testtakers.json';
+    const PATH = '/var/data/testtakers.json';
     const FORMAT = 'json';
 
 
@@ -16,7 +16,7 @@ class JsonUserService extends FileUserServiceAbstract implements UserServiceInte
      */
     public function getPath(): string
     {
-        return self::PATH;
+        return $this->rootDir.self::PATH;
     }
 
     /**

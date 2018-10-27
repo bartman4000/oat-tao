@@ -18,12 +18,18 @@ abstract class FileUserServiceAbstract implements UserServiceInterface
     protected $serializer;
 
     /**
+     * @var string
+     */
+    protected $rootDir;
+
+    /**
      * FileUserServiceAbstract constructor.
      * @param Serializer $serializer
      */
-    public function __construct(SerializerInterface $serializer)
+    public function __construct(SerializerInterface $serializer, $rootDir)
     {
         $this->serializer = $serializer;
+        $this->rootDir = $rootDir;
     }
 
     /**

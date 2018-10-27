@@ -5,9 +5,9 @@
 
 namespace App\Service;
 
-class CsvUserService extends FileUserServiceAbstract implements UserServiceInterface
+class CsvUserService extends FileUserServiceAbstract
 {
-    const PATH = __DIR__.'/../../var/data/testtakers.csv';
+    const PATH = '/var/data/testtakers.csv';
     const FORMAT = 'csv';
 
     /**
@@ -15,7 +15,7 @@ class CsvUserService extends FileUserServiceAbstract implements UserServiceInter
      */
     public function getPath(): string
     {
-        return self::PATH;
+        return $this->rootDir.self::PATH;
     }
 
     /**
