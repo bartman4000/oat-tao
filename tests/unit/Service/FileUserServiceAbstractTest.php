@@ -5,9 +5,9 @@
 
 namespace App\Tests\unit\Service;
 
-
 use App\Entity\User;
 use App\Service\FileUserServiceAbstract;
+use App\Service\Serializer\FileSerializer;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
@@ -18,9 +18,13 @@ class FileUserServiceAbstractTest extends TestCase
      */
     private $fileUserService;
 
-    public function setUp() {
+    public function setUp()
+    {
+        $serializer = new FileSerializer();
+
         $this->fileUserService = $this->getMockBuilder(FileUserServiceAbstract::class)
             ->setMethods(array('getPath','getFormat', 'getSerializerEncoder', 'getSourceContent'))
+            ->setConstructorArgs(array($serializer))
             ->getMock();
 
         $this->fileUserService->method('getFormat')->willReturn('json');
@@ -83,7 +87,7 @@ class FileUserServiceAbstractTest extends TestCase
 
     public function testGetUsersLimitAndOffset()
     {
-        $users = $this->fileUserService->getUsers(1,2);
+        $users = $this->fileUserService->getUsers(1, 2);
         $this->assertCount(2, $users);
         $this->assertInstanceOf(User::class, $users[0]);
         $this->assertInstanceOf(User::class, $users[1]);

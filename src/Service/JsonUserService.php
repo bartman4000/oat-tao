@@ -5,40 +5,25 @@
 
 namespace App\Service;
 
-
-use Symfony\Component\Serializer\Encoder\EncoderInterface;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-
-class JsonUserService extends FileUserServiceAbstract
+class JsonUserService extends FileUserServiceAbstract implements UserServiceInterface
 {
     const PATH = __DIR__.'/../../var/data/testtakers.json';
     const FORMAT = 'json';
 
+
     /**
-     * path to file with data
      * @return string
      */
-    function getPath(): string
+    public function getPath(): string
     {
         return self::PATH;
     }
 
     /**
-     * appropriate format/extension of file
-     * i.r. 'csv', 'json', 'xml' etc
      * @return string
      */
-    function getFormat(): string
+    public function getFormat(): string
     {
         return self::FORMAT;
-    }
-
-    /**
-     * Encoder for Serializer
-     * @return EncoderInterface
-     */
-    function getSerializerEncoder(): EncoderInterface
-    {
-        return new JsonEncoder();
     }
 }

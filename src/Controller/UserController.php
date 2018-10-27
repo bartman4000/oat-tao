@@ -4,8 +4,9 @@ namespace App\Controller;
 
 use App\Service\UserServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-
 
 class UserController extends AbstractController
 {
@@ -14,7 +15,13 @@ class UserController extends AbstractController
      */
     public function index($id, UserServiceInterface $userService)
     {
-        $user = $userService->getUser($id);
-        return $this->json($user);
+        try {
+            $user = $userService->getUser($id);
+            return $this->json($user);
+        } catch (NotFoundHttpException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 404);
+        } catch (\Throwable $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 500);
+        }
     }
 }

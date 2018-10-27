@@ -5,7 +5,6 @@
 
 namespace App\Service;
 
-
 use App\Entity\User;
 
 interface UserServiceInterface
@@ -24,5 +23,4 @@ interface UserServiceInterface
      * @return User
      */
     public function getUser(int $id): User;
-
 }

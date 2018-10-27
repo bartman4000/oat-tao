@@ -12,7 +12,8 @@
         "symfony/yaml": "*",
         "symfony/serializer": "^4.1",
         "symfony/property-access": "^4.1",
-        "ext-json": "*"
+        "ext-json": "*",
+      "ext-pdo": "*"
     },
     "require-dev": {
         "sensiolabs/security-checker": "^5.0",

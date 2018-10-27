@@ -5,33 +5,39 @@
 
 namespace App\Service;
 
-
 use App\Entity\User;
-use Symfony\Component\Serializer\Encoder\EncoderInterface;
-use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class FileUserServiceAbstract implements UserServiceInterface
 {
     /**
+     * @var Serializer
+     */
+    protected $serializer;
+
+    /**
+     * FileUserServiceAbstract constructor.
+     * @param Serializer $serializer
+     */
+    public function __construct(SerializerInterface $serializer)
+    {
+        $this->serializer = $serializer;
+    }
+
+    /**
      * return path to file with data
      * @return string
      */
-    abstract function getPath(): string;
+    abstract public function getPath(): string;
 
     /**
      * appropriate format of file source
      * i.r. 'csv', 'json', 'xml' etc
      * @return string
      */
-    abstract function getFormat(): string;
-
-    /**
-     * get Encoder for Serializer
-     * @return EncoderInterface
-     */
-    abstract function getSerializerEncoder(): EncoderInterface;
+    abstract public function getFormat(): string;
 
     /**
      * @param int $id
@@ -40,11 +46,17 @@ abstract class FileUserServiceAbstract implements UserServiceInterface
     public function getUser(int $id): User
     {
         $users = $this->getUsersData();
-        $users = array_filter($users, function(User $user) use ($id) {
+        $users = array_filter($users, function (User $user) use ($id) {
             return $user->getId() === $id;
         });
 
-        return array_shift($users);
+        $user = array_shift($users);
+
+        if (empty($user)) {
+            throw new NotFoundHttpException("No user with {$id} identifier");
+        }
+
+        return $user;
     }
 
     /**
@@ -56,17 +68,15 @@ abstract class FileUserServiceAbstract implements UserServiceInterface
     public function getUsers(int $offset = 0, ?int $limit = null, array $filters = []): array
     {
         $users = $this->getUsersData();
-        $users = array_slice($users, $offset, $limit);
-
-        if(!empty($filters)) {
-
+        if (!empty($filters)) {
             foreach ($filters as $property => $value) {
                 $users = array_values(array_filter($users, function (User $user) use ($property,$value) {
                     $propertyGetter = 'get'.ucfirst(strtolower($property));
-                    return $user->{$propertyGetter}() === $value;
+                    return method_exists($user, $propertyGetter) ? $user->{$propertyGetter}() === $value : true;
                 }));
             }
         }
+        $users = array_slice($users, $offset, $limit);
 
         return $users;
     }
@@ -76,16 +86,9 @@ abstract class FileUserServiceAbstract implements UserServiceInterface
      */
     protected function getUsersData(): array
     {
-        $encoders = array($this->getSerializerEncoder());
-        $normalizers = array(
-            new ObjectNormalizer(),
-            new ArrayDenormalizer()
-        );
-
-        $serializer = new Serializer($normalizers, $encoders);
         $data = $this->getSourceContent();
         /** @var array $users */
-        $users = $serializer->deserialize($data, 'App\Entity\User[]', $this->getFormat());
+        $users = $this->serializer->deserialize($data, 'App\Entity\User[]', $this->getFormat());
         $this->setIds($users);
         return $users;
     }
@@ -104,7 +107,7 @@ abstract class FileUserServiceAbstract implements UserServiceInterface
     protected function setIds(array &$users): void
     {
         $i=1;
-        array_walk($users, function(User $user) use (&$i) {
+        array_walk($users, function (User $user) use (&$i) {
             $user->setId($i);
             $i++;
         });
