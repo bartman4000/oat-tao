@@ -2,17 +2,19 @@
 
 namespace App\Controller;
 
+use App\Service\UserServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 
-class UsersController extends AbstractController
+class UserController extends AbstractController
 {
     /**
-     * @Route("/users")
+     * @Route("/user/{id}", name="user_is", requirements={"id"="\d+"})
      */
-    public function index()
+    public function index($id, UserServiceInterface $userService)
     {
-        return $this->json(array('username' => 'jane.doe'));
+        $user = $userService->getUser($id);
+        return $this->json($user);
     }
 }

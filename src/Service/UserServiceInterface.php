@@ -3,19 +3,21 @@
  * @author Bartłomiej Olewiński <bartlomiej.olewinski@gmail.com>
  */
 
-namespace App\DataSource;
+namespace App\Service;
 
 
 use App\Entity\User;
 
-interface DataSourceInterface
+interface UserServiceInterface
 {
+
     /**
-     * @param int|null $limit
      * @param int $offset
-     * @return User[]
+     * @param int|null $limit
+     * @param array $filters
+     * @return array
      */
-    public function getUsers(int $limit = null, int $offset = 0): array;
+    public function getUsers(int $offset = 0, ?int $limit = null, array $filters = []): array;
 
     /**
      * @param int $id
