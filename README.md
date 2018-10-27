@@ -29,3 +29,16 @@ php bin/console server:run
 
 As it is Symfony based project you will find more details here: https://symfony.com/doc/current/setup.html
 
+
+## Usage
+
+To change source of data use config file ***config/service.yaml***
+Simply change binding for any of controllers from
+```
+$userService: '@json_user_client'
+```
+to
+```
+$userService: '@csv_user_client'
+```
+and vice versa
