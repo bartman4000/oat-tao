@@ -1,4 +1,3 @@
-# OAT Technical Exercise
 
 ## Note
 
